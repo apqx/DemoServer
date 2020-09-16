@@ -7,32 +7,20 @@ import org.springframework.web.bind.annotation.*
 class ServerController {
 
     /**
-     * GET
-     * https://api.me.apqx.me/school?id=10
-     * defaultValue是当id不存在或未指定时，id的默认值
+     * 获取学生列表，支持分页
+     * @param lastId 已经获得的最后一个学生的[Student.id]，将返回该id之后的列表，未指定则从头开始返回
+     * @param size 每页数据的数量，默认20
      */
-    @GetMapping(value = ["/school"])
-    fun getStudentByIdGET(@RequestParam(value = "id", defaultValue = "10") id: Long): Student {
+    @PostMapping(value = ["/getStudentList"])
+    fun getStudentList(@RequestParam(value = "id", defaultValue = "-1") lastId: Long,
+        @RequestParam(value = "size", defaultValue = "20")size: Int): List<Student> {
         // 以Json的形式返回
-        // TODO 如何返回一个自定义的字符串
-        return Student(id, "Tom$id")
+        val list = ArrayList<Student>(size)
+        val startId = lastId + 1
+        for (i in startId until startId + size) {
+            list.add(Student(i, "Tom$i"))
+        }
+        return list
     }
 
-    /**
-     * POST form-data表单
-     */
-    @PostMapping(value = ["/school"])
-    fun getStudentByIdPOST1(@RequestParam(value = "id", defaultValue = "10") id: Long): Student {
-        // 以Json的形式返回
-        // TODO 如何返回一个自定义的字符串
-        return Student(id, "Tom$id")
-    }
-
-    @PostMapping(value = ["/school"])
-    fun getStudentByIdPOST2(@RequestBody body: String): Student {
-        // 以Json的形式返回
-        println(body)
-        // TODO 如何返回一个自定义的字符串
-        return Student(1, "Tom")
-    }
 }
